@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { GraphQLClient, gql } from "graphql-request";
+import Image from "next/image";
 
 export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
   const endpoint = process.env.GRAPHQL_ENDPOINT as string;
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
       },
     };
   }
-  
+
   ctx.res.setHeader("Cache-Control", "public, s-maxage=604800");
   const graphQLClient = new GraphQLClient(endpoint);
   const query = gql`
@@ -48,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
 		}
 	`;
 
-  const data = await graphQLClient.request(query);
+  const data: any = await graphQLClient.request(query);
   if (!data.post) {
     return {
       notFound: true,
@@ -101,7 +102,7 @@ const Post: React.FC<PostProps> = (props) => {
       </Head>
       <div className="post-container">
         <h1>{post.title}</h1>
-        <img
+        <Image
           src={post.featuredImage.node.sourceUrl}
           alt={post.featuredImage.node.altText || post.title}
         />
